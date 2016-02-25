@@ -12,6 +12,8 @@
 @property (nonatomic) UISegmentedControl *hAlignmentControl;
 @property (nonatomic) UISegmentedControl *vAlignmentControl;
 
+@property (nonatomic) UIPageControl *pageControl;
+
 @property (nonatomic) NSArray *cellSizes;
 @property (nonatomic) NSArray *cellColors;
 @end
@@ -32,7 +34,7 @@
 }
 
 - (void)generateExampleData {
-    self.cellSizes = @[@60, @60, @40, @80, @25, @60, @15, @40];
+    self.cellSizes = @[@60, @60, @40, @80, @25, @60, @15, @40, @60, @60, @40, @80, @25, @60, @15, @40, @60, @60, @40, @30, @25];
     self.cellColors = @[[UIColor redColor], 
                         [UIColor blueColor], 
                         [UIColor greenColor], 
@@ -41,6 +43,19 @@
                         [UIColor yellowColor], 
                         [UIColor magentaColor],
                         [UIColor grayColor],
+                        [UIColor redColor],
+                        [UIColor blueColor],
+                        [UIColor greenColor],
+                        [UIColor orangeColor],
+                        [UIColor purpleColor],
+                        [UIColor yellowColor],
+                        [UIColor magentaColor],
+                        [UIColor grayColor],
+                        [UIColor redColor],
+                        [UIColor blueColor],
+                        [UIColor greenColor],
+                        [UIColor orangeColor],
+                        [UIColor purpleColor],
                         ];
 }
 
@@ -54,14 +69,29 @@
     UISegmentedControl *hAlignmentControl = [[UISegmentedControl alloc] initWithItems:@[@"Left", @"Center", @"Right"]];
     UISegmentedControl *vAlignmentControl = [[UISegmentedControl alloc] initWithItems:@[@"Top", @"Center", @"Bottom"]];
     hAlignmentControl.selectedSegmentIndex = vAlignmentControl.selectedSegmentIndex = 0;
+
+    UIPageControl *pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 20)];
+    pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
+    pageControl.currentPageIndicatorTintColor = [UIColor blueColor];
+    //    pageControl.backgroundColor = [UIColor grayColor];
+    
     
     CGRect frame = self.collectionView.frame;
     frame.origin.y += 20;
-    frame.size.height -= 150;
+    frame.size.height = 170;
     self.collectionView.frame = frame;
     
-    frame = hAlignmentControl.frame;
+    // Turn the paging on
+    self.collectionView.pagingEnabled = YES;
+    self.collectionView.showsHorizontalScrollIndicator = NO;
+    self.collectionView.delegate = self;
+
+    frame = pageControl.frame;
     frame.origin.y = CGRectGetMaxY(self.collectionView.frame);
+    pageControl.frame = frame;
+    
+    frame = hAlignmentControl.frame;
+    frame.origin.y = CGRectGetMaxY(pageControl.frame);
     hAlignmentControl.frame = frame;
     
     frame = vAlignmentControl.frame;
@@ -72,9 +102,25 @@
     [self.view addSubview:vAlignmentControl];
     self.hAlignmentControl = hAlignmentControl;
     self.vAlignmentControl = vAlignmentControl;
+    [self.view addSubview:pageControl];
+    self.pageControl = pageControl;
     
     [hAlignmentControl addTarget:self.collectionView action:@selector(reloadData) forControlEvents:UIControlEventValueChanged];
     [vAlignmentControl addTarget:self.collectionView action:@selector(reloadData) forControlEvents:UIControlEventValueChanged];
+}
+
+- (void)collectionView:(UICollectionView *)collectionView layout:(FSQCollectionViewAlignedLayout *)collectionViewLayout didChangeNumberOfPages:(NSUInteger)numberOfPages {
+    
+    self.pageControl.numberOfPages = numberOfPages;
+    
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (scrollView.contentOffset.x > (scrollView.bounds.size.width/2.0)) {
+        self.pageControl.currentPage = 1;
+    } else {
+        self.pageControl.currentPage = 0;
+    }
 }
 
 
