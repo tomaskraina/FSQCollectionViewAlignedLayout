@@ -3,6 +3,11 @@ FSQCollectionViewAlignedLayout
 
 A simple, generic collection view layout with multiple customization options.
 
+Changes
+=======
+
+This fork adds a **support for paging**. All you need to do is to set `pagingEnabled = true` on the related collectionView.
+
 Overview
 ========
 
